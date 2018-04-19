@@ -1,29 +1,42 @@
 const fs = require('fs');
 let rawdata = fs.readFileSync('leads.json');
+var nodemailer = require('nodemailer');
 let leads = JSON.parse(rawdata);
-var newObj = leads
 
-function removeDups(data) {
-  var test = {}
-  var newTime;
 
-  for (var i = 0; i < data.leads.length; i++) {
-    if (!test.hasOwnProperty(data.leads[i]._id)) {
-      test[data.leads[i]._id] = 1
-    }
-    // else {
-    //   newTime = data.leads[i].entryDate.split("T");
-    //   console.log(newTime);
-    //   for (var j = 0; j < newObj.leads.length; j++) {
-    //     console.log(newTime);
-    //     console.log(data.leads[j].entryDate.split("T"));
-    //     if (newTime[1] > data.leads[j].entryDate.split("T")) {
-    //       newObj.leads.splice(j,1)
-    //     }
-    //   }
-    // }
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'jradtkey',
+    pass: 'Jaredradtkey1'
   }
-  console.log(test);
+});
+
+var emails = ['jradtkey@gmail.com', 'jradtkey@gmail.com', 'jradtkey@gmail.com', 'jradtkey@gmail.com', 'oinoinoinoinoino']
+function sendEmails(emails) {
+
+  var fails = []
+
+  for (var i = 0; i < emails.length; i++) {
+
+    let email = emails[i];
+
+    var mailOptions = {
+      from: "jradtkey@gmail.com",
+      to: email,
+      subject: 'Sending Email using Node.js',
+      text: 'That was easy!' + " " + i
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        fails.push(email);
+        console.log(fails);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  }
 }
 
-removeDups(leads)
+sendEmails(emails)

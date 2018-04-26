@@ -2,6 +2,9 @@ const fs = require('fs');
 let rawdata = fs.readFileSync('leads.json');
 var nodemailer = require('nodemailer');
 let leads = JSON.parse(rawdata);
+var emails = require('./emails')
+var names = require('./names')
+var num_of_customers = require('./num_of_customers')
 
 
 var transporter = nodemailer.createTransport({
@@ -12,8 +15,8 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-var emails = ['jradtkey@gmail.com', 'jradtkey@gmail.com', 'jradtkey@gmail.com', 'jradtkey@gmail.com', 'oinoinoinoinoino']
-function sendEmails(emails) {
+
+function sendEmails(emails, names, num_of_customers) {
 
   var fails = []
 
@@ -24,8 +27,8 @@ function sendEmails(emails) {
     var mailOptions = {
       from: "jradtkey@gmail.com",
       to: email,
-      subject: 'Sending Email using Node.js',
-      text: 'That was easy!' + " " + i
+      subject: 'Hi' + ' ' + names[i] + '!',
+      text: 'It looks like you had' + ' ' + num_of_customers[i] + ' customers this week.'
     };
 
     transporter.sendMail(mailOptions, function(error, info){
@@ -39,4 +42,4 @@ function sendEmails(emails) {
   }
 }
 
-sendEmails(emails)
+sendEmails(emails, names, num_of_customers)

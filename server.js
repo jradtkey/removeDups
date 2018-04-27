@@ -1,4 +1,8 @@
 const fs = require('fs');
+var http = require('http');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
 let rawdata = fs.readFileSync('leads.json');
 var nodemailer = require('nodemailer');
 let leads = JSON.parse(rawdata);
@@ -14,6 +18,27 @@ var transporter = nodemailer.createTransport({
     pass: 'Jaredradtkey1'
   }
 });
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + "/static"));
+// app.use(session({secret: 'thisIsSecret',resave: true, saveUninitialized: true}));
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+
+app.get('/', function(req, res) {
+})
+
+if(typeof require !== 'undefined') XLSX = require('xlsx');
+var workbook = XLSX.readFile('file.xlsx');
+
+// console.log(workbook.Sheets.Sheet1);
+for (var key in workbook.Sheets.Sheet1) {
+  if (workbook.Sheets.Sheet1.hasOwnProperty(key)) {
+    console.log(key['t']);
+  }
+}
 
 
 function sendEmails(emails, names, num_of_customers) {
@@ -42,4 +67,8 @@ function sendEmails(emails, names, num_of_customers) {
   }
 }
 
-sendEmails(emails, names, num_of_customers)
+// sendEmails(emails, names, num_of_customers)
+
+app.listen(process.env.PORT || 8000);
+// print to terminal window
+console.log("Listening on 8000");

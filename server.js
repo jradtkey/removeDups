@@ -26,6 +26,7 @@ var workbook = XLSX.readFile('file.xlsx');
 var cells = []
 var data = []
 var key_cells = []
+var email_data = {}
 
 
 function get_Data_From_Sheet(workbook) {
@@ -47,7 +48,7 @@ function get_Data_From_Sheet(workbook) {
 
 get_Data_From_Sheet(workbook)
 
-console.log(data);
+
 
 function countUnique(list) {
   var unique = {}
@@ -65,6 +66,37 @@ function countUnique(list) {
 
 var length = countUnique(key_cells)
 
+
+function organize_data(data, num) {
+  var list = [];
+  var list_of_lists = [];
+
+  for (var key in data.Sheets.Sheet1) {
+    list.push(key);
+  }
+
+  for (var i = 0; i < list.length-1; i++) {
+
+    var temp_list = [];
+    var j = i;
+    var count = 0;
+    while (count < num) {
+      var name = list[j]
+      var object = data.Sheets.Sheet1[name]
+
+      var split_key = list[i].split("")
+      if (typeof object == 'object') {
+        temp_list.push(object.w)
+      }
+      count++;
+      j++;
+    }
+    list_of_lists.push(temp_list)
+  }
+  console.log(list_of_lists);
+}
+
+organize_data(workbook, length);
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -101,18 +133,6 @@ function sendEmails(emails, names, num_of_customers) {
   }
 }
 
-
-for (var i = 0; i < data.length; i++) {
-  for (var j = i; j < length; j++) {
-    console.log(j);
-    j++
-    console.log(j);
-    j++
-    console.log(j);
-  }
-  i = j;
-  console.log('----');
-}
 
 app.listen(process.env.PORT || 8000);
 // print to terminal window

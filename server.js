@@ -26,7 +26,6 @@ var workbook = XLSX.readFile('file.xlsx');
 var cells = []
 var data = []
 var key_cells = []
-var email_data = {}
 
 
 function get_Data_From_Sheet(workbook) {
@@ -75,7 +74,7 @@ function organize_data(data, num) {
     list.push(key);
   }
 
-  for (var i = 0; i < list.length-1; i++) {
+  for (var i = 0; i < list.length-1; i+=num) {
 
     var temp_list = [];
     var j = i;
@@ -93,10 +92,11 @@ function organize_data(data, num) {
     }
     list_of_lists.push(temp_list)
   }
-  console.log(list_of_lists);
+  return list_of_lists
 }
 
-organize_data(workbook, length);
+const email_data = organize_data(workbook, length);
+
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -107,19 +107,24 @@ var transporter = nodemailer.createTransport({
 });
 
 
-function sendEmails(emails, names, num_of_customers) {
+function sendEmails(data) {
 
   var fails = []
+  var inputs = {}
 
-  for (var i = 0; i < emails.length; i++) {
+  for (var i = 0; i < data.length; i++) {
+    for (var j = 0; j < data[i].length; j++) {
+      inputs[j] = data[i][j]
+    }
+    
+    let email = inputs[0];
 
-    let email = emails[i];
 
     var mailOptions = {
       from: "jradtkey@gmail.com",
       to: email,
-      subject: 'Hi' + ' ' + names[i] + '!',
-      text: 'It looks like you had' + ' ' + num_of_customers[i] + ' customers this week.'
+      subject: 'Hi' + ' ' + inputs[1] + '!',
+      text: 'It looks like you had' + ' ' + inputs[2] + ' customers this week. WHOOOOO YAAAA' + inputs[3]
     };
 
     transporter.sendMail(mailOptions, function(error, info){
@@ -131,8 +136,10 @@ function sendEmails(emails, names, num_of_customers) {
       }
     });
   }
+
 }
 
+sendEmails(email_data)
 
 app.listen(process.env.PORT || 8000);
 // print to terminal window

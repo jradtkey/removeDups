@@ -3,9 +3,9 @@ var http = require('http');
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-let rawdata = fs.readFileSync('leads.json');
+
 var nodemailer = require('nodemailer');
-let leads = JSON.parse(rawdata);
+
 if(typeof require !== 'undefined') XLSX = require('xlsx');
 
 // var emails = require('./emails')
@@ -113,10 +113,12 @@ function sendEmails(data) {
   var inputs = {}
 
   for (var i = 0; i < data.length; i++) {
+
     for (var j = 0; j < data[i].length; j++) {
       inputs[j] = data[i][j]
     }
-    
+
+
     let email = inputs[0];
 
 
@@ -124,10 +126,11 @@ function sendEmails(data) {
       from: "jradtkey@gmail.com",
       to: email,
       subject: 'Hi' + ' ' + inputs[1] + '!',
-      text: 'It looks like you had' + ' ' + inputs[2] + ' customers this week. WHOOOOO YAAAA' + inputs[3]
+      text: 'It looks like you had' + ' ' + inputs[2] + ' customers this week. WHOOOOO YAAAA' + ' ' + inputs[3]
     };
 
     transporter.sendMail(mailOptions, function(error, info){
+      console.log("here");
       if (error) {
         fails.push(email);
         console.log(fails);

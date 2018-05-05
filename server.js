@@ -112,14 +112,15 @@ function sendEmails(data) {
   var fails = []
   var inputs = {}
 
+
   for (var i = 0; i < data.length; i++) {
 
     for (var j = 0; j < data[i].length; j++) {
       inputs[j] = data[i][j]
     }
 
-
     let email = inputs[0];
+    console.log(email);
 
 
     var mailOptions = {
@@ -129,17 +130,16 @@ function sendEmails(data) {
       text: 'It looks like you had' + ' ' + inputs[2] + ' customers this week. WHOOOOO YAAAA' + ' ' + inputs[3]
     };
 
+
     transporter.sendMail(mailOptions, function(error, info){
-      console.log("here");
       if (error) {
-        fails.push(email);
-        console.log(fails);
+        data.push(data[i]);
       } else {
         console.log('Email sent: ' + info.response);
       }
     });
-  }
 
+  }
 }
 
 sendEmails(email_data)
